@@ -39,6 +39,6 @@ jobs:
           name: jar
           path: docker/
       - name: Build the Docker image
-        run: docker build . --file Dockerfile --tag my-image:$(date +%s)
+        run: docker build . --file docker/Dockerfile --tag my-image:$(date +%s)
       - name: Test Run the Docker image
         run: docker run my-image:$(date +%s)
