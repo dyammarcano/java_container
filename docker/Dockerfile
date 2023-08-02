@@ -1,17 +1,21 @@
 # get oracle database image
-FROM oracle/database:11.2.0.2-xe
+FROM oraclelinux:9
 
 # install oracle jdbc driver
-RUN yum install -y oracle-jdbc11
+RUN dnf update -y && \
+    dnf install -y https://download.oracle.com/otn_software/linux/instantclient/2111000/oracle-instantclient-basic-21.11.0.0.0-1.el8.x86_64.rpm && \
+    dnf install -y java-17-openjdk && \
+    dnf clean all && \
+    rm -rf /var/cache/dnf
 
 # set working directory
 WORKDIR /app
 
 # copy jar file
-COPY . /app/app.jar
+COPY ./docker/*.jar /app/app.jar
 
 # copy oracle jdbc driver
-COPY ./driver/ojdbc11.jar /app/ojdbc.jar
+#COPY ./docker/ojdbc11.jar /app/ojdbc.jar
 
 # copy entrypoint.sh
 COPY ./docker/entrypoint.sh /app/entrypoint.sh
@@ -20,9 +24,11 @@ COPY ./docker/entrypoint.sh /app/entrypoint.sh
 ENV ORACLE_URL="jdbc:oracle:thin:@localhost:1521:xe"
 ENV ORACLE_USER="system"
 ENV ORACLE_PASSWORD="oracle"
+ENV LANG en_US.utf8
+#ENV ORACLE_DRIVER_PATH=/app/ojdbc.jar
 
 # prevent root user from running
-RUN chown -R oracle:dba /app
+#RUN chown -R oracle:dba /app
 
 # change user to oracle
 RUN chmod +x /app/entrypoint.sh
