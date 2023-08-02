@@ -1,9 +1,10 @@
 # get oracle database image
-FROM oraclelinux:8
+FROM oraclelinux:9
 
 # install oracle jdbc driver
-RUN dnf -y update && \
-    dnf install -y libaio oracle-jdbc11 && \
+RUN dnf update -y && \
+    dnf install -y https://download.oracle.com/otn_software/linux/instantclient/2111000/oracle-instantclient-basic-21.11.0.0.0-1.el8.x86_64.rpm && \
+    dnf install -y java-17-openjdk && \
     dnf clean all && \
     rm -rf /var/cache/dnf
 
@@ -11,10 +12,10 @@ RUN dnf -y update && \
 WORKDIR /app
 
 # copy jar file
-COPY ./app.jar /app/app.jar
+COPY ./docker/*.jar /app/app.jar
 
 # copy oracle jdbc driver
-COPY ./driver/ojdbc11.jar /app/ojdbc.jar
+#COPY ./driver/ojdbc11.jar /app/ojdbc.jar
 
 # copy entrypoint.sh
 COPY ./docker/entrypoint.sh /app/entrypoint.sh
@@ -28,10 +29,10 @@ ENV JAVA_HOME /usr/java/jdk-8
 ENV PATH $PATH:$JAVA_HOME/bin
 
 # prevent root user from running
-RUN chown -R oracle:dba /app
+#RUN chown -R oracle:dba /app
 
 # change user to oracle
-RUN chmod +x /app/entrypoint.sh
+#RUN chmod +x /app/entrypoint.sh
 
 # run entrypoint.sh
-ENTRYPOINT ["/app/entrypoint.sh"]
+#CMD ["entrypoint.sh"]
