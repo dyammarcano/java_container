@@ -15,7 +15,7 @@ WORKDIR /app
 COPY ./docker/*.jar /app/app.jar
 
 # copy oracle jdbc driver
-#COPY ./driver/ojdbc11.jar /app/ojdbc.jar
+#COPY ./docker/ojdbc11.jar /app/ojdbc.jar
 
 # copy entrypoint.sh
 COPY ./docker/entrypoint.sh /app/entrypoint.sh
@@ -25,14 +25,13 @@ ENV ORACLE_URL="jdbc:oracle:thin:@localhost:1521:xe"
 ENV ORACLE_USER="system"
 ENV ORACLE_PASSWORD="oracle"
 ENV LANG en_US.utf8
-ENV JAVA_HOME /usr/java/jdk-8
-ENV PATH $PATH:$JAVA_HOME/bin
+#ENV ORACLE_DRIVER_PATH=/app/ojdbc.jar
 
 # prevent root user from running
 #RUN chown -R oracle:dba /app
 
 # change user to oracle
-#RUN chmod +x /app/entrypoint.sh
+RUN chmod +x /app/entrypoint.sh
 
 # run entrypoint.sh
-#CMD ["entrypoint.sh"]
+ENTRYPOINT ["/app/entrypoint.sh"]
