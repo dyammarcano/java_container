@@ -1,5 +1,5 @@
 # get oracle database image
-FROM oraclelinux:8-slim
+FROM oraclelinux:8
 
 # install oracle jdbc driver
 RUN dnf -y update && \
